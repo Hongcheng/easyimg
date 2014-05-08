@@ -1,0 +1,116 @@
+<html>
+	<body>
+<!-- 		<form action="/first" method="get">
+			<input type="text" name="page">
+			<input type="submit" value="Next">
+		</form>
+ -->
+ <script src="static/jquery-1.11.1.min.js">
+ </script>
+<script type="text/javascript">
+// function LoadGroupXMLDoc()
+// {
+// 	var xmlhttp;
+// 	xmlhttp = new XMLHttpRequest();
+// 	xmlhttp.onreadystatechange=function()
+// 	{
+// 		if(xmlhttp.readyState==4&&xmlhttp.status ==200)
+// 		{
+// 			console.log(xmlhttp.responseText);
+// 			// var testjson = eval("("+xmlhttp.responseText+")");
+// 			var testjson = JSON.parse(xmlhttp.responseText);
+// 			console.log(testjson);
+// 		}
+// 	}
+// 	xmlhttp.responseText;
+// 	xmlhttp.open("GET","/first/nextgroup?group=1",true);
+// 	xmlhttp.send();
+// }
+// document.onreadystatechange=LoadGroupXMLDoc();
+$(document).ready( function () {
+	LoadGroup();
+	GetGroupNum();
+});
+var len=5;
+var gpnum=0;
+function GetGroupNum(){
+     	$.ajax({
+     		url: '/first/groupnum',
+     		type:'get',
+     		success:function(data){
+     			len = parseInt(data);
+      			// console.log(len)
+    		}
+	});
+}
+function Generate(){
+	var img = $("#image");
+	console.log("a");
+	var inputob = $("#image input");
+	var wordlist=new Array();
+	for(var i=0;i<inputob.length;i++)
+	{
+		// wordlist[i] = inputob[i].value;
+		wordlist.push(inputob[i].value);
+	}
+	wordlist = JSON.stringify(wordlist);
+	console.log(wordlist);
+     	$.ajax({
+     		url: '/first/result',
+     		type:'post',
+     		dataType:'json',
+     		data:{
+     			group: gpnum,
+     			words: wordlist
+     		},
+     		success:function(data){
+     			console.log(data);
+		 	console.log(wordlist);
+    			img.empty();
+     			 var imgStr  = '<img src= ' + data+ ">";
+			img.append(imgStr);
+
+     		}
+	});
+}
+function Previous(){
+	gpnum = (gpnum+len-1)%len;
+	LoadGroup();
+}
+function Next(){
+	gpnum=(gpnum + 1)%len;
+	LoadGroup();
+}
+function LoadGroup () {
+	console.log(len);
+	var img = $("#image");
+	img.empty();
+     	$.ajax({
+     		url: '/first/nextgroup',
+     		type: 'get',
+     		dataType: 'json',
+     		data: {
+     			group: gpnum
+     		},
+     		success: function (data) {
+     			console.log(data);
+     			for(var i=0;i<data.length;i++)
+     			{
+     				var imgStr  = '<img src= " ' + data[i]+ ' "height="150" weight = "200"><input type="text" name="words">';
+				img.append(imgStr);
+
+     			}
+     			img.append('<button type="button" onclick="Generate()">Generate</button>');
+     		}
+
+     	});
+}
+</script>
+ 		<div id="image"></div>
+<!-- 		<button type="button" onclick="Generate()">Generate</button>
+ -->
+ 		<div id="myDiv">AJAX</div>
+		<button type="button" onclick="Previous()">Previous Group</button>
+		<button type="button" onclick="Next()">Previous Group</button>
+	</body>
+</html>
