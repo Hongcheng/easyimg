@@ -13,13 +13,27 @@ class ImgGroup(Document):
 	Group_Img_List = ListField()
 	Group_Name = StringField(max_length = 50, default = '')
 
+def PathGroup(gunm):
+	newGroup = ImgGroup.objects()
+	filepath = []
 
-def ImgHandler(filepath,TextList):
+	for i in range(len(newGroup[gunm].Group_Img_List)):
+		filepath.append("/api/img/"+str(newGroup[gunm].Group_Img_List[i]))
+	return filepath
+
+
+def ImgHandler(gnum,TextList):
 	FontFolder = 'static/Font'
 	font = ImageFont.truetype(FontFolder + "/simsun.ttc",34)
 	width = 400
 	height=0
 	h_pos = 0
+
+	restGroup = ImgGroup.objects()
+	filepath=[]
+
+	for i in range(len(restGroup[gnum].Group_Img_List)):
+		filepath.append((str(restGroup[gnum].Group_Img_List[i])))
 	pic_number=len(filepath)
 
 	im=[]

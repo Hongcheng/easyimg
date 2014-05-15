@@ -4,18 +4,16 @@ from util import APIBaseHandler
 from .model import ImgGroup
 from .model import ImgHandler
 from .model import ImgSingle
+from .model import PathGroup
 import uuid
 import json
 import Image
 class APIFirstHandler(APIBaseHandler):
 	def get(self):
 		# self.write("123")
-		newGroup = ImgGroup.objects()
-		filepath = []
-		gn=0
-		for i in range(len(newGroup[gn].Group_Img_List)):
-			filepath.append("/api/img/"+str(newGroup[gn].Group_Img_List[i]))
+		gnum=0
 		# print filepath
+		filepath = PathGroup(gnum)
 		self.render("FirstGet.html",filepath=filepath)
 	# def post(self):
 	# 	newGroup = Group.objects()
@@ -33,29 +31,22 @@ class APIFirstHandler(APIBaseHandler):
 
 class APIFirstNextGroup(APIBaseHandler):
 	def get(self):
-		newGroup = ImgGroup.objects()
-		filepath=[]
 		gnum = int(self.get_arguments("group")[0])
-		for i in range(len(newGroup[gnum].Group_Img_List)):
-			filepath.append("/api/img/"+str(newGroup[gnum].Group_Img_List[i]))
+		filepath = PathGroup(gnum)
 		# print filepath
 		result = json.dumps(filepath)
 		self.write(result)
 
 class APIFirstResult(APIBaseHandler):
 	def post(self):
-		restGroup = ImgGroup.objects()
-		filepath=[]
 		# print len(self.get_arguments("group"))
 		gnum = int(self.get_arguments("group")[0])
-		for i in range(len(restGroup[gnum].Group_Img_List)):
-			filepath.append((str(restGroup[gnum].Group_Img_List[i])))
 		words = self.get_arguments("words")[0]
 		# print type(words)
 		# print words
 		words = json.loads(words)
 
-		ret = ImgHandler(filepath,words)
+		ret = ImgHandler(gnum,words)
 
 		filename = uuid.uuid4()
 		filepath = 'static/temp/'+str(filename)+'.jpg'
