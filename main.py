@@ -26,6 +26,8 @@ application = tornado.web.Application([
 	(r"/first/nextgroup",first.view.APIFirstNextGroup),
 	(r"/first/result",first.view.APIFirstResult),
 	(r"/first/groupnum",first.view.APIFirstGroupNum),
+	(r"/api/img/([a-f0-9]*)",first.view.APIGetImg),
+	# (r"/api/temp/([a-f0-9]*)",first.view.APIGetTempImg),
 ],**settings)
 
 if __name__ == "__main__":

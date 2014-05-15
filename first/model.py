@@ -3,32 +3,16 @@ import os
 import ImageFont
 import Image
 import ImageDraw
+import StringIO
+connect('Image')
 
-connect('picture')
-
-# class Picture(Document):
-# 	Pic_File = FileField()
-# 	Pic_Tag = ListField()
-
-class Group(Document):
-	Group_File_List = ListField()
+class ImgSingle(Document):
+	Img = FileField()
+	
+class ImgGroup(Document):
+	Group_Img_List = ListField()
 	Group_Name = StringField(max_length = 50, default = '')
 
-# newGroup = Group()
-# newGroup.Group_File_List.append('1.jpg')
-# newGroup.Group_File_List.append('2.jpg')
-# newGroup.Group_File_List.append('3.jpg')
-# newGroup.Group_File_List.append('4.jpg')
-# newGroup.Group_Name = "baidu"
-# newGroup.save()
-
-# newGroup = Group.objects()
-# for i in newGroup:
-# 	print i.delete()
-
-# newGroup = Group.objects()
-# for i in newGroup:
-# 	print i.Group_File_List
 
 def ImgHandler(filepath,TextList):
 	FontFolder = 'static/Font'
@@ -40,7 +24,9 @@ def ImgHandler(filepath,TextList):
 
 	im=[]
 	for path in filepath:
-		tmpim = Image.open(path)
+		print path
+		imgs=ImgSingle.objects(id=str(path))
+		tmpim = Image.open(StringIO.StringIO(imgs[0].Img.read()))
 		w,h = tmpim.size
 		h = (width*h)/w
 		height+=h
