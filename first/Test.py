@@ -22,7 +22,7 @@ class ImgGroup(Document):
 
 class ImgTemp(Document):
 	Img = FileField()
-	Date = DateTimeField()
+	DateTime = DateTimeField()
 
 
 class ImgSingle(Document):
@@ -43,7 +43,9 @@ class ImgSingle(Document):
 # 	print  img.UUID
 # 	Image.open(StringIO.StringIO(img.Img.read())).show()
 
-
+'''insert the baoqiang and baidu img to mongoengine'''
+# a = open('../static/Img/1.jpg')
+# print type(a)
 # newGroup = ImgGroup()
 # newGroup.Group_Name="baobao"
 # for i in range(4):
@@ -62,11 +64,13 @@ class ImgSingle(Document):
 # 	newGroup.Group_Img_List.append(newImg.id)
 # newGroup.save()
 
-# imgs = ImgTemp.objects()
-# for img in imgs:
-# 	if img.Date < datetime.datetime.now():
-# 		img.delete()
-
+'''remove the temp Img,you should first delete the FileField.seconds was the timeout second'''
+imgs = ImgTemp.objects()
+for img in imgs:
+	if  datetime.datetime.now() - img.DateTime > datetime.timedelta(seconds=60):
+		print datetime.datetime.now() - img.DateTime
+		img.Img.delete()
+		img.delete()
 
 
 

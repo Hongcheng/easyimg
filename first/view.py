@@ -4,6 +4,7 @@ from util import APIBaseHandler
 from .model import ImgGroup
 from .model import ImgHandler
 from .model import ImgSingle
+from .model import ImgTemp
 from .model import PathGroup
 import uuid
 import json
@@ -46,11 +47,8 @@ class APIFirstResult(APIBaseHandler):
 		# print words
 		words = json.loads(words)
 
-		ret = ImgHandler(gnum,words)
-
-		filename = uuid.uuid4()
-		filepath = 'static/temp/'+str(filename)+'.jpg'
-		ret.save(filepath)
+		filepath = ImgHandler(gnum,words)
+		filepath = '/api/temp/'+str(filepath)
 		filepath = json.dumps(filepath)
 		self.write(filepath)
 class APIFirstGroupNum(APIBaseHandler):
@@ -62,6 +60,13 @@ class APIFirstGroupNum(APIBaseHandler):
 class APIGetImg(APIBaseHandler):
 	def get(self,img_id):
 		imgs=ImgSingle.objects(id=str(img_id))
+		# imgs[0].Img.read().show()
+		# Image.open(StringIO.StringIO(imgs[0].Img.read())).show()
+		self.write(imgs[0].Img.read())
+
+class APIGetTempImg(APIBaseHandler):
+	def get(self,img_id):
+		imgs=ImgTemp.objects(id=str(img_id))
 		# imgs[0].Img.read().show()
 		# Image.open(StringIO.StringIO(imgs[0].Img.read())).show()
 		self.write(imgs[0].Img.read())

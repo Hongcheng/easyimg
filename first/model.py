@@ -4,6 +4,8 @@ import ImageFont
 import Image
 import ImageDraw
 import StringIO
+import datetime
+import uuid
 connect('Image')
 
 class ImgSingle(Document):
@@ -12,6 +14,10 @@ class ImgSingle(Document):
 class ImgGroup(Document):
 	Group_Img_List = ListField()
 	Group_Name = StringField(max_length = 50, default = '')
+
+class ImgTemp(Document):
+	Img = FileField()
+	DateTime = DateTimeField()
 
 def PathGroup(gunm):
 	newGroup = ImgGroup.objects()
@@ -25,7 +31,7 @@ def PathGroup(gunm):
 def ImgHandler(gnum,TextList):
 	FontFolder = 'static/Font'
 	font = ImageFont.truetype(FontFolder + "/simsun.ttc",34)
-	width = 400
+	width = 200
 	height=0
 	h_pos = 0
 
@@ -38,7 +44,7 @@ def ImgHandler(gnum,TextList):
 
 	im=[]
 	for path in filepath:
-		print path
+		# print path
 		imgs=ImgSingle.objects(id=str(path))
 		tmpim = Image.open(StringIO.StringIO(imgs[0].Img.read()))
 		w,h = tmpim.size
@@ -57,4 +63,24 @@ def ImgHandler(gnum,TextList):
 		draw.text((20,h_pos),TextList[i],font=font,fill="#ffffff")
 		h_pos += 90
 		# print h_pos
-	return ret
+	# newTemp = ImgTemp()
+	# output=StringIO.StringIO()
+	# ret.save(output)
+	# newTemp.Img = output
+	# newTemp.DateTime = datetime.datetime.now()
+	# newTemp.save()
+
+	# filename = uuid.uuid4()
+	# filepath = 'static/temp/'+str(filename)+'.jpg'
+	# ret.save(filepath)
+	# print type(filepath),filepath
+	imagefile = StringIO.StringIO()
+	ret.save(imagefile,format='JPEG')
+
+	newTemp = ImgTemp()
+	newTemp.Img = imagefile.getvalue()
+	newTemp.DateTime = datetime.datetime.now()
+
+	newTemp.save()
+	# os.remove(filepath)
+	return newTemp.id
